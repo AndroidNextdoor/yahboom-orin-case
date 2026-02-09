@@ -86,18 +86,25 @@ yahboom-fan off
 
 ## Troubleshooting
 
+> **Full guide:** See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed solutions.
+
 ### OLED not showing anything?
 
-1. Check I2C connection:
-   ```bash
-   sudo i2cdetect -y 7
-   ```
-   You should see device `3c` (OLED) and `0e` (controller)
+**Step 1:** Find which I2C bus your OLED is on:
+```bash
+# Scan common buses
+for bus in 0 1 4 7 8; do
+    echo "=== Bus $bus ===" && sudo i2cdetect -y $bus 2>/dev/null | grep "3c" || true
+done
+```
 
-2. Restart the service:
-   ```bash
-   sudo systemctl restart yahboom-oled
-   ```
+The OLED is at address `3c`. On Orin Nano, it's usually **bus 4**.
+The fan/RGB controller is at `0e` on **bus 7**.
+
+**Step 2:** Restart the service:
+```bash
+sudo systemctl restart yahboom-oled
+```
 
 ### Permission denied errors?
 
@@ -105,13 +112,14 @@ Add yourself to the i2c group:
 ```bash
 sudo usermod -aG i2c $USER
 ```
-Then log out and back in.
+Then **log out and back in** (required!).
 
-### Fan not working?
+### IP shows "No network"?
 
-The fan controller is at I2C address `0x0e`. Check it's detected:
+The Orin Nano uses different interface names (`eno1` instead of `eth0`).
+The script handles this automatically, but check your interface:
 ```bash
-sudo i2cdetect -y 7
+ip link show
 ```
 
 ## Uninstall

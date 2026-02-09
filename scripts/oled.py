@@ -24,7 +24,8 @@ class YahboomOLED:
     """OLED display controller for system stats."""
 
     # Common I2C buses on different Jetson models
-    I2C_BUSES = [7, 1, 0, 8, 4]
+    # Bus 4 is most common on Orin Nano, try it first
+    I2C_BUSES = [4, 7, 1, 0, 8]
 
     def __init__(self, i2c_bus="auto", debug=False):
         self._debug = debug
