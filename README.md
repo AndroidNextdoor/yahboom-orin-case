@@ -6,6 +6,17 @@ Easy setup for the Yahboom CubeNano aluminum case with OLED display, RGB lights,
   <img src="images/case-photo.jpg" alt="Yahboom CubeNano Case" width="400">
 </p>
 
+## Why This Repo?
+
+**The official Yahboom scripts don't work on Jetson Orin Nano out of the box.** This repo fixes those issues:
+
+| Problem | Original Script | This Fix |
+|---------|----------------|----------|
+| OLED not detected | Only scans I2C buses `[1, 0, 7, 8]` | Scans `[4, 7, 1, 0, 8]` — bus 4 first (where Orin Nano OLED is) |
+| IP shows nothing | Looks for `eth0` and `wlan0` | Checks `eno1`, `wlP1p1s0` (Orin Nano names) + legacy names |
+| Hardcoded paths | `/home/jetson/Desktop/CubeNano/` | Installs to `/opt/` with auto-configured systemd services |
+| Manual setup | Copy files, edit service, run commands | One-command installer does everything |
+
 ## What This Does
 
 - **OLED Display**: Shows CPU usage, memory, disk space, IP address, and time
